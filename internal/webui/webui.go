@@ -11,6 +11,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/kairos-io/kairos/internal/agent"
 	"github.com/labstack/echo/v4"
 	process "github.com/mudler/go-processmanager"
 	"github.com/nxadm/tail"
@@ -94,6 +95,16 @@ func Start(ctx context.Context, l string) error {
 	s := state{}
 	ec := echo.New()
 	assetHandler := http.FileServer(getFileSystem())
+
+	agentConfig, err := agent.LoadConfig()
+	if err != nil {
+		return err
+	}
+	if agentConfig.DisableWebUIInstall {
+		log.Println("WebUI installer disabled by branding")
+		return nil
+	}
+
 	ec.GET("/*", echo.WrapHandler(http.StripPrefix("/", assetHandler)))
 
 	ec.POST("/install", func(c echo.Context) error {
