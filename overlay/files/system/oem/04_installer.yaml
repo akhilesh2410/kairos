@@ -7,6 +7,13 @@ stages:
        - systemctl disable getty@tty1
        - systemctl enable kairos
        - systemctl enable kairos-webui
+     - if: |
+           [ "$(kairos-agent state get boot)" == "livecd_boot" ]
+       commands:
+       # TODO: This is sub-optimal, we need the state to tell also what init we should run.
+       # At the moment it is harmless to run in both worlds
+       - systemctl enable kairos-webui
+       - rc-service kairos-webui start
     # Starts installer on boot in Alpine and openRC based
      - if: |
             cat /proc/cmdline | grep -q "nodepair.enable"

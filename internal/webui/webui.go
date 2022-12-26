@@ -127,7 +127,7 @@ func Start(ctx context.Context, l string) error {
 		args = append(args, file.Name())
 
 		s.Lock()
-		s.p = process.New(process.WithName("kairos-agent"), process.WithArgs(args...), process.WithTemporaryStateDir())
+		s.p = process.New(process.WithName("/usr/bin/kairos-agent"), process.WithArgs(args...), process.WithTemporaryStateDir())
 		s.Unlock()
 		err = s.p.Run()
 		if err != nil {
